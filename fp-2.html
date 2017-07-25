@@ -1,0 +1,269 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>FP #2</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+        <style>
+            p > code { display: inline; }
+            .reveal pre {
+                box-shadow: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>Practical Functional Programming!</h1>
+                    <p>With Javascript and C#</p>
+                    <p>...continued</p>
+                </section>
+                <section>
+                    <h1>Recap</h1>
+                    <p class="fragment">Functional programming is all about programming with <em><strong>pure</strong></em> functions</p>
+                    <p class="fragment">
+                        <em>“A pure function is a function where the return value is only determined by its input values, without observable side effects.” -&nbsp;Someone</em>
+                    </p>
+                    <p class="fragment">
+                        <em>“In computer science, a function or expression is said to have a side effect if it modifies some state or has an observable interaction with calling functions or the outside world.” -&nbsp;Wikipedia</em>
+                    </p>
+                </section>
+                <section>
+                    <h1>Static vs. Instance Methods</h1>
+                    <p>...from the FP perspective</p>
+                </section>
+                <section>
+                    <ul>
+                        <li>Instance methods have an implicit data parameter -- "this"</li>
+                        <li class="fragment">Static methods don't</li>
+                    </ul>
+                </section>
+                <section>
+                    <h1>How can we make a static method act like an instance method?</h1>
+                    <p class="fragment">Explicitly pass in the data argument!</p>
+                </section>
+                <section>
+                        <pre>C#<code class="csharp">
+IEnumerable&lt;int&gt; numbers = new List&lt;int&gt;() {1, 2, 3};
+
+IEnumerable&lt;int&gt; incrementedNumbers1 = numbers.Select(i => i + 1);
+IEnumerable&lt;int&gt; incrementedNumbers2 = Select(i => i + 1, numbers);
+                        </code></pre>
+                </section>
+                <section>
+                        <pre>JS<code class="js">
+const numbers = [1,2,3];
+
+const incrementedNumbers1 = numbers.map(i => i + 1);
+const incrementedNumbers2 = map(i => i + 1, numbers);
+                    </code></pre>
+                </section>
+                <section>
+                    <h1>Function composition</h1>
+                    <p class="fragment">
+                        In computer science, function composition is an act or mechanism to combine simple functions to build more complicated ones. <em>- Wikipedia</em>
+                    </p>
+                </section>
+                <section>
+                    <p>Using instance methods...</p>
+                </section>
+                <section>
+                        <pre>C#<code class="csharp">
+IEnumerable&lt;int&gt; numbers = new List&lt;int&gt;() {1, 2, 3};
+
+IEnumerable&lt;int&gt; output = numbers
+    .Where(i => i % 2 == 0)
+    .Select(i => i + 1);
+                        </code></pre>                  
+                        <p class="fragment">...dot chaining</p>
+                </section>
+                <section>
+                        <pre>JS<code class="js">
+const numbers = [1,2,3];
+
+const output = numbers
+    .filter(i => i % 2 === 0)
+    .map(i => i + 1);
+                    </code></pre>
+                    <p class="fragment">...dot chaining</p>
+                </section>
+                <section>
+                    <h3>Using static methods</h3>
+                </section>
+                <section>
+                    <pre>C#<code class="csharp">
+IEnumerable&lt;int&gt; numbers = new List&lt;int&gt;() {1, 2, 3};
+
+IEnumerable&lt;int&gt; output = 
+    Select(i => i + 1, 
+        Where(i => i % 2 === 0, numbers));
+                    </code></pre>
+                    <p class="fragment">Yuck.</p>                
+                </section>
+                <section>
+                        <pre>JS<code class="js">
+const numbers = [1,2,3];
+
+const output = 
+    filter(i => i % 2 === 0, 
+        map(i => i + 1, numbers));
+                    </code></pre>
+                    <p class="fragment">Yuck.</p>
+                </section>
+                <section>
+                    <h3>Cleaning it up</h3>
+                </section>
+                <section>
+                    <h3>Pipe (or Compose)</h3>
+                    <p>Pipe and compose let you combine small functions to make bigger functions <em>without</em> invoking them.
+                </section>
+                <section>
+                    <pre>C#<code class="csharp">
+public static Func&lt;TIn, TOut&gt; Pipe&lt;TIn, Ta, TOut&gt;
+    (this Func&lt;TIn, Ta&gt; f, Func&lt;Ta, TOut&gt; g)
+{
+    return x =&gt; g(f(x));
+}
+                    </code></pre>
+                    <pre>            
+                    <code class="csharp">
+List&lt;int&gt; numbers = new List&lt;int&gt;() {1, 2, 3};
+
+Func&lt;IEnumerable&lt;int&gt;, IEnumerable&lt;int&gt;&gt; EvenOnly = 
+    d => Where(i => i%2 == 0, d);
+
+Func&lt;IEnumerable&lt;int&gt;, IEnumerable&lt;int&gt;&gt; AddOne = 
+    d => Select(i => i + 1, d);
+
+Func&lt;IEnumerable&lt;int&gt;, IEnumerable&lt;int&gt;&gt; Process = 
+    EvenOnly.Pipe(AddOne); // See implementation above
+
+IEnumerable&lt;int&gt; output = Process(numbers);
+                    </code></pre>                  
+                </section>
+                <section>
+                    <pre>JS<code class="js">
+const numbers = [1,2,3];
+
+const evenOnly = i => i % 2 === 0;
+const addOne = i => i + 1;
+
+const process = pipe(evenOnly, addOne); // Use Ramda or Lodash
+
+const output = process(numbers);
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Point-free (Tacit programming)</h3>
+                    <p class="fragment">
+                        Tacit programming, also called point-free style, is a programming paradigm in which function definitions do not identify the arguments (or "points") on which they operate. <em>- Wikipedia</em>
+                    </p>
+                    <p class="fragment">
+                        Point free programming is more concise and declarative... but beware the point free trap! It can make code easier to read or much harder to read, depending on the circumstances.
+                    </p>
+                </section>                
+                <section>
+                    <pre>C#<code class="csharp">
+Func&lt;int, int&gt; Increment = i => i + 1;
+
+List&lt;int&gt; numbers = new List&lt;int&gt;() {1, 2, 3};
+
+// Not point free
+IEnumerable&lt;int&gt; incremented = numbers.Where(i => Increment(i));
+// Point free
+IEnumerable&lt;int&gt; incremented = numbers.Where(Increment);
+                    </code>  </pre>                  
+                </section>
+
+                <section>
+                    <pre>JS<code class="js">
+const increment = i => i + 1;
+
+const numbers = [1,2,3];
+
+// Not point free
+const incremented = numbers.map(i => increment(i));
+// Point free
+const incremented = numbers.map(increment);
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>Currying</h3>
+                    <p class="fragment">
+                    In mathematics and computer science, currying is the technique of translating the evaluation of a function that takes multiple arguments (or a tuple of arguments) into evaluating a sequence of functions, each with a single argument. <em>- Wikipedia (again)</em>
+                    </p>
+                    <p class="fragment">Currying makes composition and point free programming easier.</p>
+                </section>
+                <section>
+                    <pre>C#<code class="csharp">// Manually curried -- binary functions converted to unary functions
+Func&lt;int, Func&lt;int, int&gt;&gt; Add = a => b => a + b;
+Func&lt;int, Func&lt;int, int&gt;&gt; Mod = b => a => a % b;
+Func&lt;int, Func&lt;int, bool&gt;&gt; Equals = a => b => a == b;
+
+Func&lt;int, bool&gt; IsEven = Mod(2).Pipe(Equals(0));
+Func&lt;int, int&gt; Increment = Add(1);
+
+List&lt;int&gt; numbers = new List&lt;int&gt;() {1, 2, 3};
+
+Func&lt;IEnumerable&lt;int&gt;, IEnumerable&lt;int&gt;&gt; Process = 
+    Where(IsEven)
+        .Pipe(Select(Increment));
+
+IEnumerable&lt;int&gt; output = Process(numbers);</code></pre>                    
+                </section>
+                <section>subl
+                    <pre>JS<code class="js">// Curried using Ramda
+const add = curry((a, b) => a + b);
+const mod = curry((b, a) => a % b);
+const equals = curry((a, b) => a === b);
+
+const isEven = pipe(mod(2), equals(0));
+const increment = add(1);
+
+const numbers = [1,2,3];
+
+const process = pipe(
+    filter(isEven), 
+    map(increment));
+
+const output = process(numbers);</code></pre>
+                </section>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                history: true,
+
+                // More info https://github.com/hakimel/reveal.js#dependencies
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                ]
+            });
+        </script>
+    </body>
+</html>

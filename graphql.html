@@ -1,0 +1,290 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>GraphQL</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+        <style>
+            p > code { display: inline; }
+            .reveal pre {
+                box-shadow: none;
+            }
+            .fade {
+              opacity: 0.3
+            }
+        </style>
+    </head>
+    <body>
+        <div class="reveal">
+          <div class="slides">
+            <section>
+              <section>
+                <h1>What is GraphQL?</h1>
+                <p class="fragment">
+                <em>“GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data. GraphQL provides a complete and understandable description of the data in your API, gives clients the power to ask for exactly what they need and nothing more, makes it easier to evolve APIs over time, and enables powerful developer tools.”</em>
+                </p>
+              </section>
+              <section>
+                <p><em>“<strong>GraphQL is a query language for APIs</strong><span class="fade"> and a runtime for fulfilling those queries with your existing data. GraphQL provides a complete and understandable description of the data in your API, gives clients the power to ask for exactly what they need and nothing more, makes it easier to evolve APIs over time, and enables powerful developer tools.”</span></em></p>
+                <p class="fragment" style="margin-top: 50px">
+                GraphQL can be used instead of REST, SOAP, RPC, etc. It usually operates over HTTP, but doesn't need to.
+                </p>
+              </section>
+              <section>
+                <p><em><span class="fade">“GraphQL is a query language for APIs</span><strong> and a runtime for fulfilling those queries with your existing data.</strong><span class="fade"> GraphQL provides a complete and understandable description of the data in your API, gives clients the power to ask for exactly what they need and nothing more, makes it easier to evolve APIs over time, and enables powerful developer tools.”</span></em></p>
+                <p class="fragment" style="margin-top: 50px">
+                Server implementations exist for most common languages and frameworks, including: Node.js, C#/.NET, Java, PHP, Python, and Ruby.
+                </p>
+              </section>
+              <section>
+                <p><em><span class="fade">“GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data.</span><strong> GraphQL provides a complete and understandable description of the data in your API</strong><span class="fade">, gives clients the power to ask for exactly what they need and nothing more, makes it easier to evolve APIs over time, and enables powerful developer tools.”</span></em></p>
+                <p class="fragment" style="margin-top: 50px">
+                GraphQL APIs are strongly typed -- Queries can be validated, APIs are self documenting.
+                </p>
+              </section>
+              <section>
+                <p><em><span class="fade">“GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data. GraphQL provides a complete and understandable description of the data in your API,</span><strong> gives clients the power to ask for exactly what they need and nothing more</strong><span class="fade">, makes it easier to evolve APIs over time, and enables powerful developer tools.”</span></em></p>
+                <p class="fragment" style="margin-top: 50px">
+                Queries are more efficient. Eliminate multiple requests to the server and only receive what you ask for.
+                </p>
+              </section>
+              <section>
+                <p><em><span class="fade">“GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data. GraphQL provides a complete and understandable description of the data in your API, gives clients the power to ask for exactly what they need and nothing more,</span><strong> makes it easier to evolve APIs over time</strong><span class="fade">, and enables powerful developer tools.”</span></em></p>
+                <p class="fragment" style="margin-top: 50px">
+                New methods/properties may be added and old ones deprecated without affecting existing implementations. Less of a need to version API releases. 
+                </p>
+              </section>
+              <section>
+                <p><em><span class="fade">“GraphQL is a query language for APIs and a runtime for fulfilling those queries with your existing data. GraphQL provides a complete and understandable description of the data in your API, gives clients the power to ask for exactly what they need and nothing more, makes it easier to evolve APIs over time,</span><strong> and enables powerful developer tools.”</strong></em></p>
+                <p class="fragment" style="margin-top: 50px">
+                See <a target="_blank" href="https://github.com/graphql/graphiql">GraphiQL</a>
+                </p>
+              </section>
+            </section>
+            <section>
+              <section><h2>How does this compare to REST/Ad-hoc?</h2></section>
+              <section>
+                <ul>
+                  <li>REST requires multiple round trips between client and server for multiple assets.</li>
+                  <li class="fragment">Old clients will receive any new fields that are added, even though they aren't needed</li>
+                  <li class="fragment">REST tends to be weakly typed</li>
+                  <li class="fragment">When building ad-hoc endpoints, you often need to consider the tradeoffs of flexibility vs. performance (i.e. payload size)</li>
+                </ul>
+              </section>
+            </section>
+            <section>I'm sold. How do I do it?</section>
+            <section>
+              <section>
+                <h2>Interacting with a GraphQL server</h2>
+              </section>
+              <section>
+                <p>Kinda like JSON</p>
+                <pre><code class="json">
+  {
+    characters {
+      name
+      realName
+      alignment
+    }
+  }
+                </code></pre>
+                <a target="_blank" href="http://localhost:4000/graphql?query=%7B%0A%20%20characters%20%7B%0A%20%20%20%20name%0A%20%20%20%20realName%0A%20%20%20%20alignment%0A%20%20%7D%0A%7D">Results</a>
+              </section>
+              <section>
+                <p>Passing Arguments</p>
+                <pre><code class="json">
+  {
+    characters(name: "Batman") {
+      name
+      realName
+      alignment
+    }
+  }
+                </code></pre>
+                <a target="_blank" href="http://localhost:4000/graphql?query=%7B%0A%20%20characters(name%3A%20%22Batman%22)%20%7B%0A%20%20%20%20name%0A%20%20%20%20realName%0A%20%20%20%20alignment%0A%20%20%7D%0A%7D">Results</a>
+              </section>
+              <section>
+                <p>Deep nesting</p>
+                <pre><code class="json">
+  {
+    characters(name: "Batman"){
+      friends{
+        name
+        enemies{
+          name
+        }
+      }
+    }
+  }
+                </code></pre>
+                <a target="_blank" href="http://localhost:4000/graphql?query=%7B%0A%20%20characters(name%3A%20%22Batman%22)%7B%0A%20%20%20%20friends%7B%0A%20%20%20%20%20%20name%0A%20%20%20%20%20%20enemies%7B%0A%20%20%20%20%20%20%20%20name%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D">Results</a>
+              </section>
+              <section>
+                <p>Aliases</p>
+                <pre><code class="json">
+  {
+    goodGuys: characters(alignment: "good") {
+      name
+      realName
+    }
+
+    badGuys: characters(alignment: "bad") {
+      name
+      realName
+    }
+  }
+                </code></pre>
+                <a target="_blank" href="http://localhost:4000/graphql?query=%7B%0A%20%20goodGuys%3A%20characters(alignment%3A%20%22good%22)%20%7B%0A%20%20%20%20name%0A%20%20%20%20realName%0A%20%20%7D%0A%09%0A%20%20badGuys%3A%20characters(alignment%3A%20%22bad%22)%20%7B%0A%20%20%20%20name%0A%20%20%20%20realName%0A%20%20%7D%0A%7D">Results</a>
+              </section>
+              <section>
+                <p>Fragments</p>
+                <pre><code class="json">
+  {
+    goodGuys: characters(alignment: "good") {
+      ...names
+    }
+
+    badGuys: characters(alignment: "bad") {
+      ...names
+    }
+  }
+
+  fragment names on Character {
+    name
+    realName
+  }
+                </code></pre>
+                <a target="_blank" href="http://localhost:4000/graphql?query=%7B%0A%20%20goodGuys%3A%20characters(alignment%3A%20%22good%22)%20%7B%0A%20%20%20%20...names%0A%20%20%7D%0A%09%0A%20%20badGuys%3A%20characters(alignment%3A%20%22bad%22)%20%7B%0A%20%20%20%20...names%0A%20%20%7D%0A%7D%0A%0Afragment%20names%20on%20Character%20%7B%0A%20%20name%0A%20%20realName%0A%7D">Results</a>
+              </section>
+              <section>
+                <p>Variables</p>
+                <pre><code class="json">
+  query CharacterByName($name: String)
+  {
+    characters(name: $name) {
+      name
+      realName
+    }
+  }
+                </code></pre>
+                <pre><code class="json">
+  {
+    "name": "Joker"
+  }
+                </code></pre>
+                <a target="_blank" href="http://localhost:4000/graphql?query=query%20CharacterByName(%24name%3A%20String)%0A%7B%0A%20%20characters(name%3A%20%24name)%20%7B%0A%09%09name%0A%20%20%20%20realName%0A%20%20%7D%0A%7D&operationName=CharacterByName&variables=%7B%0A%20%20%22name%22%3A%20%22Joker%22%0A%7D">Results</a>
+              </section>
+              <section>
+                <p>Mutations</p>
+                <pre><code class="json">
+  mutation{
+    add(character: {
+      name: "Bane",
+      realName: "Dorrance",
+      alignment: "bad"
+    }){
+      name
+    }
+  }
+                </code></pre>
+                <a target="_blank" href="http://localhost:4000/graphql?query=mutation%7B%0A%20%20add(character%3A%20%7B%0A%20%20%20%20name%3A%20%22Bane%22%2C%0A%20%20%20%20realName%3A%20%22Dorrance%22%2C%0A%20%20%20%20alignment%3A%20%22bad%22%0A%20%20%7D)%7B%0A%20%20%20%20name%0A%20%20%7D%0A%7D">Results</a>
+              </section>
+            </section>
+            <section>
+              <section>
+                <h2>Implementing a GraphQL server</h2>
+              </section>
+              <section>
+                <p>Where does GraphQL sit in your application?</p>
+                <img src="/img/business_layer.png" />
+              </section>
+              <section>
+                <p>GraphQL over HTTP</p>
+                <ul>
+                  <li>Unlike REST, GraphQL APIs are generally served over a single endpoint (e.g. /graphql)</li>
+                  <li class="fragment">Can be sent over GET <em>or</em> POST</li>
+                  <li class="fragment">... using <pre class="inline"><code>query</code></pre> and <pre class="inline"><code>variables</code></pre> parameters</li>
+                </ul>
+              </section>
+              <section>
+                <p>
+                  <a href="http://graphql.org/code/">Server implementations</a> exist for most popular languages/frameworks.
+                </p>
+                <p>
+                   Including: <a href="https://github.com/graphql-dotnet/graphql-dotnet">C#/.NET</a>,
+                   <a href="http://graphql.org/graphql-js/">Node.js</a>,
+                   <a href="https://github.com/graphql-java/graphql-java">Java</a>, and
+                   <a href="https://github.com/webonyx/graphql-php">PHP</a>
+                </p>
+              </section>
+              <section>
+                <p>Type System</p>
+                <ul>
+                  <li>Standard Primitives: String, Int, Float, Boolean, etc.</li>
+                  <li class="fragment">Custom Object Types</li>
+                  <li class="fragment">Interface and Union Types</li>
+                </ul>
+              </section>
+              <section>
+                <p>Best practices/considerations</p> 
+                <ul>
+                  <li class="fragment">GZIP</li>
+                  <li class="fragment">Be mindful of batching and caching</li>
+                  <li class="fragment">Create a single endpoint</li>
+                  <li class="fragment">Use GraphiQL!</li>
+                </ul>
+              </section>
+            </section>
+            <section>
+              <p>Tools/frameworks built on/for GraphQL</p>
+              <p class="fragment">
+                <a href="https://facebook.github.io/relay/">Relay</a> - A JavaScript framework for merging React and GraphQL. 
+              </p>
+              <p class="fragment">
+                <a href="http://dev.apollodata.com/">Apollo</a> - A GraphQL client for use in React and React Native apps.
+              </p>
+              <p class="fragment">
+                <a href="https://github.com/graphql/graphiql">GraphiQL</a> - An interactive, in browser IDE for exploring GraphQL services.
+              </p>
+              <p class="fragment">
+                <a href="https://github.com/facebook/dataloader">Dataloader</a> - A must have for any Node.js based GraphQL server. Helpful for individual batching and caching of data queries.
+              </p>
+            </section>
+          </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                history: true,
+
+                // More info https://github.com/hakimel/reveal.js#dependencies
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                ]
+            });
+        </script>
+    </body>
+</html>

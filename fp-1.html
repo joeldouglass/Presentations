@@ -1,0 +1,395 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>FP #1</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/black.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+        <style>
+            p > code { display: inline; }
+            .reveal pre {
+                box-shadow: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>What is Functional Programming?</h1>
+                </section>
+                <section>
+                    Programming with functions...
+                </section>
+                <section>
+                    <p>Programming with <em><strong>PURE</strong></em> functions</p>
+                    <p class="fragment">
+                        <em>“A pure function is a function where the return value is only determined by its input values, without observable side effects.” -&nbsp;Someone</em>
+                    </p>
+                </section>
+                                <section>
+                    <h3>What is a side effect?</h3>
+                    <p class="fragment">
+                        <em>“In computer science, a function or expression is said to have a side effect if it modifies some state or has an observable interaction with calling functions or the outside world.” -&nbsp;Wikipedia</em>
+                    </p>
+                </section>
+                <section>
+                    Is this a pure function?
+                    <pre>JS<code class="js">
+function add(a, b){
+  return a + b;
+}               
+                    </code>
+                    </pre>
+                    <p class="fragment">Yes!</p>                
+                </section>
+                <section>
+                    How about this one?
+                    <pre>JS<code class="js">
+function save(id, record){
+  DB.save(id, record);
+}               
+                    </code>
+                    </pre>
+                    <p class="fragment">No</p>
+                </section>
+                <section>
+                    And this?
+                    <pre>JS<code class="js">
+function add(a, b){
+  console.log("Adding numbers!");
+  return a + b;
+}                   
+                    </code>
+                    </pre>
+                    <p class="fragment">No</p>
+                </section>
+                <section>
+                    <p>Is <code>multiply</code> pure? How about <code>m</code>?</p>
+                    <pre>JS<code class="js">
+function multiply(numbers){
+
+  var product = 1;
+
+  function m(a){
+    product = product * a;
+  }
+
+  numbers.forEach(m);
+
+  return product;
+}                   
+                    </code>
+                    </pre>
+                    <p class="fragment">
+                        <code>multiply</code> - Yes, <code>m</code> - No
+                    </p>
+                </section>
+                <section>
+                    <h3>Benefits of pure functions</h3>
+                    <ul>
+                    <li class="fragment">Deterministic</li>
+                    <li class="fragment">Memoizable</li>
+                    <li class="fragment">Parallelizable</li>
+                    <li class="fragment">Composable</li>
+                    </ul>
+                </section>
+                <section>
+                    <h3>What does a language need to be considered <em>functional</em>?</h3>
+                    <p class="fragment">This is a bit fuzzy... but generally:</p>
+                    <p class="fragment">- First class functions</p>
+                    <p class="fragment">- Limiting of side effects</p>
+                </section>
+                <section>
+                    What languages support functional programming?
+                </section>
+                <section>
+                    <p>Purely Functional</p>
+                    <ul>
+                        <li class="fragment">Haskell</li>
+                    </ul>
+                    <p class="fragment"><em>Im</em>purely Functional</p>
+                    <ul>
+                    <li class="fragment">ML/OCaml</li>
+                    <li class="fragment">Lisp/Clojure</li>
+                    <li class="fragment">Scala</li>
+                    <li class="fragment">F#</li>
+                                        </ul>
+
+                </section>
+                <section>
+                    <p>What about...</p>
+                    <ul>
+                    <li class="fragment">Javascript?</li>
+                    <li class="fragment">C#?</li>
+                    </ul>
+                </section>
+                <section>
+                    <p>First class functions?</p>
+                    <p class="fragment"><em>Yes! (C# as of 2.0)</em></p>
+                    <p class="fragment">Limit side effects?</p>
+                    <p class="fragment"><em>This is up to you...</em></p>
+                </section>
+                <section>
+                    <h2>First class functions</h2>
+                </section>
+                <section>
+                Function declaration
+                        <pre>JS<code class="js">
+function add(a, b){
+  return a + b;
+}
+                    </code>
+                    <code class="js">
+&gt;&gt;&gt;&gt; add(3,4)
+&gt;&gt;&gt;&gt; 7
+                    </code></pre>
+                </section>
+                <section>
+                Function declaration
+                        <pre>C#<code class="csharp">
+public static int Add(int a, int b)
+{
+  return a + b;
+}
+                        </code>
+                <code class="csharp">
+&gt;&gt;&gt;&gt; Add(3,4)
+&gt;&gt;&gt;&gt; 7
+                    </code></pre>
+                </section>              
+                <section>
+                Function expression
+                        <pre>JS<code class="js">
+var add = function(a, b){
+  return a + b;
+};                      
+                    </code>
+                    <code class="js">
+&gt;&gt;&gt;&gt; add(3,4)
+&gt;&gt;&gt;&gt; 7
+                    </code></pre>
+                </section>
+                <section>
+                ES6 function expression
+                        <pre>JS<code class="js">
+var add = (a, b) => a + b
+                        </code>
+                                            <code class="js">
+&gt;&gt;&gt;&gt; add(3,4)
+&gt;&gt;&gt;&gt; 7
+                    </code></pre>
+                </section>
+                <section>
+                Function Expression
+                        <pre>C#<code class="csharp">
+public static Func&lt;int, int, int&gt; Add = (a, b) => a + b;
+                        </code>
+                <code class="csharp">
+&gt;&gt;&gt;&gt; Add(3,4)
+&gt;&gt;&gt;&gt; 7
+                    </code>                     </pre>
+                </section>
+                <section>
+                    <h2>Higher order functions</h2>
+                    <p class="fragment">Take functions as arguments</p>
+                    <p class="fragment"><em>or</em></p>
+                    <p class="fragment">Return other functions as results</p>
+                </section>
+                <section>
+                    <H3>Map, Filter, Reduce</h3>
+                    <p class="fragment"><em>The gateway drug of functional programming</em></p>
+                </section>
+                <section>
+                    <h2>Map</h2>
+                    <p class="fragment"><em>*SELECT in C#</em></p>
+                    <p class="fragment">Takes a <em>function <strong>(a -> b)</strong></em> and a <em>collection</em>, calls the function on each member of the collection.</p>
+                    <pre class="fragment">JS<code class="js">
+var newList = map(fn, myList); // Not part of core
+                               // use underscore/lodash/ramda
+var newList = myList.map(fn);
+                    </code></pre>
+                    <pre class="fragment">C#<code class="csharp">
+IEnumerable newList = Select(fn, myList); // Not part of core
+                                          // you need to implement this
+IEnumerable newList = myList.Select(fn);
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>The imperative way</h3>
+                    <pre>JS<code class="js">
+var numbers = [1,2,3];
+var times2 = [];
+for(var i = 0; i < numbers.length; i++){
+  times2.push(numbers[i] * 2);
+}
+                    </code>
+                    <code class="js fragment">
+&gt;&gt;&gt;&gt; [2,4,6]
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>With Map</h3>
+                    <pre>JS<code class="js">
+var times2 = [1,2,3].map(a => a * 2)
+                    </code>
+                    <code class="js fragment">
+&gt;&gt;&gt;&gt; [2,4,6]
+                    </code>
+                    </pre>
+                </section>
+                <section>
+                    <h3>*Select</h3>
+                    <pre>C#<code class="csharp">
+List&lt;int&gt; numbers = new List&lt;int&gt;(){ 1, 2, 3};
+IEnumerable&lt;int&gt; times2 = numbers.Select(a => a * 2)
+                    </code>
+                    <code class="csharp fragment">
+&gt;&gt;&gt;&gt; IEnumerable&lt;int&gt;(){ 2, 4, 6 }
+                    </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h2>Filter</h2>
+                    <p class="fragment"><em>*WHERE in C#</em></p>
+                    <p class="fragment">
+                    Takes a <em>predicate function (a -> bool)</em> and a <em>collection</em>, 
+                    and returns a new collection of elements that match the predicate.</p>
+                    <pre class="fragment">JS<code class="js">
+var newList = filter(fn, myList); // Not part of core
+                                  // use underscore/lodash/ramda
+var newList = myList.filter(fn);
+                    </code></pre>
+                    <pre class="fragment">C#<code class="csharp">
+IEnumerable newList = Where(fn, myList); // Not part of core
+                                         // you need to implement this
+IEnumerable newList = myList.Where(fn);
+                    </code></pre>                   
+                </section>
+                <section>
+                    <h3>The imperative way</h3>
+                    <pre>JS<code class="js">
+var numbers = [1,2,3,4];
+var evens = [];
+for(var i = 0; i < numbers.length; i++){
+  if(numbers[i] % 2 === 0){
+    times2.push(numbers[i]);
+  }
+}
+                    </code>
+                    <code class="js fragment">
+&gt;&gt;&gt;&gt; [2,4]
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>With Filter</h3>
+                    <pre>JS<code class="js">
+var evens = [1,2,3,4].filter(a => a % 2 === 0)
+                    </code>
+                    <code class="js fragment">
+&gt;&gt;&gt;&gt; [2,4]
+                    </code>
+                    </pre>
+                </section>
+                <section>
+                    <h3>*Where</h3>
+                    <pre>C#<code class="csharp">
+List&lt;int&gt; numbers = new List&lt;int&gt;(){ 1, 2, 3, 4};
+IEnumerable&lt;int&gt; times2 = numbers.Where(a => a % 2 == 0)
+                    </code>
+                    <code class="csharp fragment">
+&gt;&gt;&gt;&gt; IEnumerable&lt;int&gt;(){ 2, 4 }
+                    </code>
+                    </pre>
+                </section>
+
+                <section>
+                    <h2>Reduce</h2>
+                    <p class="fragment"><em>*Aggregate in C#</em></p>
+                    <p class="fragment">
+                    Takes a <em>function ((accum, b) -> c)</em>, a <em>seed</em> and a <em>collection</em>, 
+                    and iterates through the collection calling the function with the accumulated
+                    result and the current item.</p>
+                    <pre class="fragment">JS<code class="js">
+var newList = reduce(fn, seed, myList); // Not part of core
+                                        // use underscore/lodash/ramda
+var newList = myList.reduce(fn, seed);
+                    </code></pre>
+                    <pre class="fragment">C#<code class="csharp">
+IEnumerable newList = Aggregate(seed, fn, myList); // Not part of core
+                                         // you need to implement this
+IEnumerable newList = myList.Aggregate(seed, fn);
+                    </code></pre>                       
+                </section>
+                <section>
+                    <h3>The imperative way</h3>
+                    <pre>JS<code class="js">
+var numbers = [1,2,3,4];
+var sum = 0;
+for(var i = 0; i < numbers.length; i++){
+  sum = sum + numbers[i];
+}
+                    </code>
+                    <code class="js fragment">
+&gt;&gt;&gt;&gt; 10
+                    </code></pre>
+                </section>
+                <section>
+                    <h3>With Reduce</h3>
+                    <pre>JS<code class="js">
+var evens = [1,2,3,4].reduce((accum, b) => accum + b, 0)
+                    </code>
+                    <code class="js fragment">
+&gt;&gt;&gt;&gt; 10
+                    </code>
+                    </pre>
+                </section>
+                <section>
+                    <h3>*Aggregate</h3>
+                    <pre>C#<code class="csharp">
+List&lt;int&gt; numbers = new List&lt;int&gt;(){ 1, 2, 3, 4};
+IEnumerable&lt;int&gt; times2 = numbers.Aggregate(0, (accum, b) => accum + b)
+                    </code>
+                    <code class="csharp fragment">
+&gt;&gt;&gt;&gt; 10
+                    </code>
+                    </pre>
+                </section>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                history: true,
+
+                // More info https://github.com/hakimel/reveal.js#dependencies
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+                ]
+            });
+        </script>
+    </body>
+</html>
